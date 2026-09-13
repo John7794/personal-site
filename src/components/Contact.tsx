@@ -61,7 +61,7 @@ export function Contact() {
         </div>
 
         <div className="mt-32">
-           <h2 className="text-[12vw] leading-[0.8] font-display font-black uppercase tracking-tighter">
+           <h2 className="text-[10vw] leading-[0.85] font-display font-black uppercase tracking-tighter break-words">
              {t.cta} <br/> {t.cta2}
            </h2>
         </div>
