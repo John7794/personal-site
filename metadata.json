@@ -1,0 +1,6 @@
+{
+  "name": "Ultra-Modern Developer Portfolio",
+  "description": "An interactive, ultra-modern portfolio website for a web developer featuring smooth animations and a sleek dark theme.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
