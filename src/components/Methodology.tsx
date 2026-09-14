@@ -2,19 +2,17 @@ import { motion } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
 
 const stepsUk = [
-  { step: '01', title: 'Аналіз даних', desc: 'Збір, декомпозиція та первинне структурування інформаційного хаосу.' },
-  { step: '02', title: 'Семіотичне моделювання', desc: 'Пошук візуальних метафор та створення системи знаків для майбутнього продукту.' },
-  { step: '03', title: 'Проєктування логіки', desc: 'Створення wireframes та архітектури користувацького досвіду (UX).' },
-  { step: '04', title: 'Візуальна форма', desc: 'Імплементація UI, типографіки, сіток та інтерактивних анімацій.' },
-  { step: '05', title: 'Реалізація', desc: 'Підготовка асетів, верстка, налаштування аналітики та запуск.' }
+  { step: '01', title: 'UX-дослідження', desc: 'Аналіз потреб користувачів, збір даних та формування архітектури досвіду.' },
+  { step: '02', title: 'Візуальна концепція', desc: 'Пошук стилістики, створення мудбордів та ключових візуальних метафор.' },
+  { step: '03', title: 'Розробка UI-інтерфейсу', desc: 'Проєктування екранів, типографіки, сіток та дизайн-системи продукту.' },
+  { step: '04', title: 'Розробка прототипу та реалізація проєкту', desc: 'Створення інтерактивних прототипів, підготовка асетів та фінальний запуск.' }
 ];
 
 const stepsEn = [
-  { step: '01', title: 'Data Analysis', desc: 'Collection, decomposition, and initial structuring of information chaos.' },
-  { step: '02', title: 'Semiotic Modeling', desc: 'Searching for visual metaphors and creating a sign system for the future product.' },
-  { step: '03', title: 'Logic Design', desc: 'Creating wireframes and user experience architecture (UX).' },
-  { step: '04', title: 'Visual Form', desc: 'Implementation of UI, typography, grids, and interactive animations.' },
-  { step: '05', title: 'Implementation', desc: 'Preparation of assets, coding, analytics setup, and launch.' }
+  { step: '01', title: 'UX Research', desc: 'Analyzing user needs, gathering data, and shaping the experience architecture.' },
+  { step: '02', title: 'Visual Concept', desc: 'Searching for styling, creating moodboards, and defining key visual metaphors.' },
+  { step: '03', title: 'UI Design', desc: 'Designing screens, typography, grids, and the product\'s design system.' },
+  { step: '04', title: 'Prototyping & Implementation', desc: 'Creating interactive prototypes, preparing assets, and final launch.' }
 ];
 
 export function Methodology() {
@@ -29,7 +27,7 @@ export function Methodology() {
           {title}
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {stepsData.map((item, index) => (
             <motion.div 
               key={item.step}

@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ExternalLink } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 const categories = ['All', 'UI/UX', 'Information Design', '3D'];
 
@@ -68,13 +70,15 @@ const projectsEn = [
 export function Projects() {
   const { language } = useLanguage();
   const [activeCategory, setActiveCategory] = useState('All');
+  const sectionRef = useRef<HTMLElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const t = language === 'uk' ? {
-    titleWork: "Архітектура ",
+    titleWork: "Приклади ",
     titleHighlight: "Проєктів",
   } : {
     titleWork: "Project ",
-    titleHighlight: "Architecture",
+    titleHighlight: "Examples",
   };
 
   const projectsData = language === 'uk' ? projectsUk : projectsEn;
@@ -82,9 +86,40 @@ export function Projects() {
     ? projectsData 
     : projectsData.filter(p => p.category === activeCategory);
 
+  useEffect(() => {
+    // Only apply horizontal scroll if we have a reasonable amount of projects
+    // and if the viewport is large enough (skip on mobile for better UX)
+    const ctx = gsap.context(() => {
+      if (!sectionRef.current || !scrollContainerRef.current) return;
+      
+      const isMobile = window.matchMedia("(max-width: 768px)").matches;
+      if (isMobile) return;
+
+      const getScrollAmount = () => {
+        let scrollWidth = scrollContainerRef.current!.scrollWidth;
+        return -(scrollWidth - window.innerWidth + 100); // 100px padding
+      };
+
+      gsap.to(scrollContainerRef.current, {
+        x: getScrollAmount,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: () => `+=${Math.abs(getScrollAmount())}`,
+          pin: true,
+          scrub: 1,
+          invalidateOnRefresh: true,
+        }
+      });
+    });
+
+    return () => ctx.revert();
+  }, [filteredProjects, language]);
+
   return (
-    <section id="work" className="py-32 relative z-10 border-t border-zinc-900 bg-[#050505] min-h-screen">
-      <div className="max-w-7xl mx-auto px-6">
+    <section ref={sectionRef} id="work" className="py-32 relative z-10 border-t border-zinc-900 bg-[#050505] overflow-hidden">
+      <div className="px-6 mb-24 md:pl-24 max-w-7xl">
         
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-8">
           <h2 className="text-4xl md:text-6xl font-display font-bold tracking-tight text-white uppercase">
@@ -108,7 +143,7 @@ export function Projects() {
           </div>
         </div>
 
-        <div className="space-y-12">
+        <div ref={scrollContainerRef} className="flex flex-col md:flex-row gap-12 md:pl-24 pr-24 w-max">
           <AnimatePresence mode="popLayout">
             {filteredProjects.map((project, index) => (
               <motion.a
@@ -121,40 +156,46 @@ export function Projects() {
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.4 }}
                 key={project.title}
-                className="group block relative border border-zinc-900 bg-black hover:border-zinc-700 transition-colors overflow-hidden"
+                className="group block relative border border-zinc-900 bg-black hover:border-zinc-700 transition-colors overflow-hidden w-full md:w-[600px] lg:w-[800px] h-[450px] lg:h-[550px] flex-shrink-0"
               >
-                {/* Background Image that appears on hover */}
-                <div className="absolute inset-0 z-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500">
-                  <img src={project.image} alt="" className="w-full h-full object-cover grayscale" />
+                {/* Always visible cover image */}
+                <div className="absolute inset-0 z-0 overflow-hidden">
+                  <img 
+                    src={project.image} 
+                    alt={project.title} 
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" 
+                  />
+                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500"></div>
                 </div>
 
-                <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between p-8 lg:p-12 gap-8">
+                {/* Informative overlapping panel */}
+                <div className="absolute bottom-4 left-4 right-4 lg:bottom-6 lg:left-6 lg:right-6 z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between p-6 lg:p-8 gap-6 bg-black/85 backdrop-blur-md border border-zinc-800/80 translate-y-4 opacity-90 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
                   <div className="flex-1">
-                    <div className="flex items-center gap-4 mb-4">
+                    <div className="flex items-center gap-4 mb-3">
                       <span className="text-[#00FF41] font-mono text-sm">[{index + 1 < 10 ? `0${index + 1}` : index + 1}]</span>
-                      <span className="text-zinc-500 font-mono text-xs uppercase tracking-widest">{project.category}</span>
+                      <span className="text-zinc-400 font-mono text-xs uppercase tracking-widest">{project.category}</span>
                     </div>
-                    <h3 className="text-3xl lg:text-5xl font-display font-bold text-white uppercase tracking-tight group-hover:text-[#00FF41] transition-colors">
+                    <h3 className="text-2xl lg:text-4xl font-display font-bold text-white uppercase tracking-tight group-hover:text-[#00FF41] transition-colors">
                       {project.title}
                     </h3>
                   </div>
 
                   <div className="flex-1 lg:max-w-md w-full">
-                    <p className="text-zinc-400 font-light leading-relaxed mb-6">
+                    <p className="text-zinc-300 font-light leading-relaxed mb-5 text-sm lg:text-base">
                       {project.description}
                     </p>
-                    <div className="flex items-center justify-between border-t border-zinc-800 pt-4">
+                    <div className="flex items-center justify-between border-t border-zinc-800/80 pt-4">
                        <div className="flex gap-8 font-mono text-xs text-zinc-500">
                           <div>
-                            <span className="block text-zinc-600 mb-1 uppercase">Role</span>
+                            <span className="block text-zinc-500 mb-1 uppercase text-[10px]">Role</span>
                             <span className="text-zinc-300">{project.role}</span>
                           </div>
                           <div>
-                            <span className="block text-zinc-600 mb-1 uppercase">Year</span>
+                            <span className="block text-zinc-500 mb-1 uppercase text-[10px]">Year</span>
                             <span className="text-zinc-300">{project.year}</span>
                           </div>
                        </div>
-                       <div className="w-10 h-10 rounded-full border border-zinc-700 flex items-center justify-center group-hover:bg-[#00FF41] group-hover:border-[#00FF41] group-hover:text-black transition-all">
+                       <div className="w-10 h-10 rounded-full border border-zinc-700 flex items-center justify-center bg-black group-hover:bg-[#00FF41] group-hover:border-[#00FF41] group-hover:text-black transition-all">
                          <ExternalLink className="w-4 h-4" />
                        </div>
                     </div>

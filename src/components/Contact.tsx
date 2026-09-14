@@ -13,7 +13,7 @@ export function Contact() {
   }, []);
 
   const t = language === 'uk' ? {
-    cta: "СТВОРЮЄМО",
+    cta: "ТВОРІМО",
     cta2: "МАЙБУТНЄ",
     available: "Відкритий до нових викликів та колаборацій",
     email: "Написати",
@@ -60,7 +60,8 @@ export function Contact() {
           </div>
         </div>
 
-        <div className="mt-32">
+        <div className="mt-32 relative">
+           <img src="/logo.png" alt="IS Logo" className="w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32 absolute -top-16 right-0 mix-blend-difference" />
            <h2 className="text-[10vw] leading-[0.85] font-display font-black uppercase tracking-tighter break-words">
              {t.cta} <br/> {t.cta2}
            </h2>

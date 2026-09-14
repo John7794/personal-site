@@ -29,18 +29,27 @@ export function Hero() {
   }, []);
 
   useEffect(() => {
-    if (containerRef.current) {
-      gsap.to(containerRef.current, {
-        yPercent: 30,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: true
-        }
-      });
-    }
+    const ctx = gsap.context(() => {
+      if (containerRef.current) {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: "#home",
+            start: "top top",
+            end: "+=1200",
+            scrub: 1,
+            pin: true,
+          }
+        });
+        
+        tl.to(containerRef.current, {
+          scale: 30, // massive zoom
+          opacity: 0,
+          ease: "power2.inOut"
+        });
+      }
+    });
+
+    return () => ctx.revert();
   }, []);
 
   const t = language === 'uk' ? {
@@ -94,13 +103,13 @@ export function Hero() {
         
         <h1 className="w-full flex justify-center text-center font-display font-black uppercase leading-[0.85] tracking-tighter mix-blend-difference pointer-events-auto whitespace-nowrap">
           <span className="text-[10vw] md:text-[11vw] flex items-center group cursor-default">
-            <span className="text-transparent [-webkit-text-stroke:2px_#3f3f46] group-hover:[-webkit-text-stroke:2px_#00FF41] transition-all duration-500">
+            <span className="text-transparent [-webkit-text-stroke:2px_white] group-hover:[-webkit-text-stroke:2px_#00FF41] transition-all duration-500">
               <ScrambleText text={t.surPrefix} delay={200} />
             </span>
             <span className="text-white">
               <ScrambleText text={t.surHighlight} delay={400} />
             </span>
-            <span className="text-transparent [-webkit-text-stroke:2px_#3f3f46] group-hover:[-webkit-text-stroke:2px_#00FF41] transition-all duration-500">
+            <span className="text-transparent [-webkit-text-stroke:2px_white] group-hover:[-webkit-text-stroke:2px_#00FF41] transition-all duration-500">
               <ScrambleText text={t.surSuffix} delay={600} />
             </span>
           </span>
@@ -110,7 +119,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1.5, ease: [0.16, 1, 0.3, 1] }}
-          className="text-lg md:text-xl text-zinc-400 font-light tracking-wide mt-12 text-center pointer-events-auto"
+          className="text-lg md:text-xl text-white font-light tracking-wide mt-12 text-center pointer-events-auto"
         >
           {t.desc}
         </motion.p>

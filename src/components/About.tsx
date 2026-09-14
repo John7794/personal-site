@@ -1,6 +1,8 @@
 import { motion } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 const defaultResearchUk = [
   { year: '01', title: 'Вебдизайн', type: 'Дисципліна' },
@@ -19,14 +21,13 @@ const tags = ['UI/UX', 'Data Visualization', 'Typography', 'Academic Research', 
 export function About() {
   const { language } = useLanguage();
   const [researchData, setResearchData] = useState<any[]>([]);
+  const manifestoRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     fetch('/api/data')
       .then(res => res.json())
       .then(data => {
         if (data && data.sheet1 && data.sheet1.length > 1) {
-          // Parse rows. Assuming: row[0]=id, row[1]=uk_title, row[2]=uk_type, row[3]=en_title, row[4]=en_type
-          // Skip header row[0]
           const parsed = data.sheet1.slice(1).map((row: any) => ({
             year: row[0] || '00',
             titleUk: row[1] || '',
@@ -40,15 +41,41 @@ export function About() {
       .catch(console.error);
   }, []);
 
+  useEffect(() => {
+    // Dynamic font-weight based on scroll velocity (Kinetic Typography)
+    let animationFrameId: number;
+    
+    const updateWeight = () => {
+      if (manifestoRef.current) {
+        const velocity = Math.abs(ScrollTrigger.getVelocity());
+        const mappedWeight = gsap.utils.clamp(300, 800, 300 + velocity * 0.15);
+        
+        gsap.to(manifestoRef.current, {
+          fontWeight: mappedWeight,
+          duration: 0.2, // slight ease back to normal
+          ease: "power2.out",
+          overwrite: "auto"
+        });
+      }
+    };
+
+    ScrollTrigger.addEventListener("scroll", updateWeight);
+    return () => {
+      ScrollTrigger.removeEventListener("scroll", updateWeight);
+    };
+  }, []);
+
   const t = language === 'uk' ? {
     philosophyTitle: "Філософія",
     manifesto: "Дизайн для мене — це створення комплексного мультимедійного досвіду. Я проєктую сучасні вебрішення та цифрові продукти, де продумана візуальна естетика поєднується з передовими технологіями для максимально інтуїтивної взаємодії.",
-    researchTitle: "Дослідження та Академія",
+    researchTitle1: "Дослідження",
+    researchTitle2: "Та Академія",
     researchDesc: "Академічна практика та викладання є фундаментальною частиною мого підходу до комерційного дизайну.",
   } : {
     philosophyTitle: "Philosophy",
     manifesto: "For me, design is about creating a comprehensive multimedia experience. I engineer modern web solutions and digital products where thoughtful visual aesthetics combine with advanced technologies for highly intuitive interaction.",
-    researchTitle: "Research & Academia",
+    researchTitle1: "Research",
+    researchTitle2: "& Academia",
     researchDesc: "Academic practice and teaching are a fundamental part of my approach to commercial design.",
   };
 
@@ -116,6 +143,7 @@ export function About() {
           
           <div className="lg:col-span-8 lg:pl-16">
             <motion.p 
+              ref={manifestoRef}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
@@ -143,17 +171,18 @@ export function About() {
         </div>
 
         {/* Research & Academia Block - Strict List */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8 pt-32 border-t border-zinc-900">
-          <div className="lg:col-span-5">
-             <h2 className="text-3xl md:text-5xl font-display font-bold uppercase tracking-tight text-white mb-6">
-              {t.researchTitle}
+        <div className="pt-32 border-t border-zinc-900">
+           <div className="mb-16">
+             <h2 className="text-[10vw] md:text-[12vw] leading-[0.85] font-display font-black uppercase tracking-tighter mix-blend-difference">
+                <span className="text-white block">{t.researchTitle1}</span>
+                <span className="text-zinc-600 block md:-mt-4">{t.researchTitle2}</span>
              </h2>
-             <p className="text-zinc-500 font-mono text-sm leading-relaxed max-w-sm">
+             <p className="text-zinc-500 font-mono text-sm leading-relaxed max-w-sm mt-8">
               {t.researchDesc}
              </p>
-          </div>
+           </div>
 
-          <div className="lg:col-span-7 flex flex-col">
+          <div className="flex flex-col">
             {displayData.map((item, index) => (
               <motion.div 
                 key={index}
