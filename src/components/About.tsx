@@ -3,6 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { fetchGeneralDataFromSheet, SheetGeneralData } from '../lib/sheets';
 
 const defaultResearchUk = [
   { year: '01', title: 'Вебдизайн', type: 'Дисципліна' },
@@ -19,8 +20,9 @@ const defaultResearchEn = [
 const tags = ['UI/UX', 'Data Visualization', 'Typography', 'Academic Research', 'Spatial Design', 'Semiotics'];
 
 export function About() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const [researchData, setResearchData] = useState<any[]>([]);
+  const [generalData, setGeneralData] = useState<SheetGeneralData | null>(null);
   const manifestoRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
@@ -39,6 +41,10 @@ export function About() {
         }
       })
       .catch(console.error);
+
+    fetchGeneralDataFromSheet().then(data => {
+      if (data) setGeneralData(data);
+    });
   }, []);
 
   useEffect(() => {
@@ -65,20 +71,6 @@ export function About() {
     };
   }, []);
 
-  const t = language === 'uk' ? {
-    philosophyTitle: "Філософія",
-    manifesto: "Дизайн для мене — це створення комплексного мультимедійного досвіду. Я проєктую сучасні вебрішення та цифрові продукти, де продумана візуальна естетика поєднується з передовими технологіями для максимально інтуїтивної взаємодії.",
-    researchTitle1: "Дослідження",
-    researchTitle2: "Та Академія",
-    researchDesc: "Академічна практика та викладання є фундаментальною частиною мого підходу до комерційного дизайну.",
-  } : {
-    philosophyTitle: "Philosophy",
-    manifesto: "For me, design is about creating a comprehensive multimedia experience. I engineer modern web solutions and digital products where thoughtful visual aesthetics combine with advanced technologies for highly intuitive interaction.",
-    researchTitle1: "Research",
-    researchTitle2: "& Academia",
-    researchDesc: "Academic practice and teaching are a fundamental part of my approach to commercial design.",
-  };
-
   const displayData = researchData.length > 0 
     ? researchData.map(item => ({
         year: item.year,
@@ -95,48 +87,18 @@ export function About() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8 mb-40">
           <div className="lg:col-span-4 flex flex-col justify-between">
             <h2 className="text-sm font-mono text-zinc-500 uppercase tracking-[0.2em] mb-8">
-              [ {t.philosophyTitle} ]
+              [ {t('About_PhilosophyTitle', language === 'uk' ? 'Філософія' : 'Philosophy')} ]
             </h2>
-            <div className="hidden lg:flex relative w-full aspect-square border border-zinc-900 p-6 rounded-full items-center justify-center bg-black/40 overflow-hidden shadow-[inset_0_0_40px_rgba(0,0,0,0.8)]">
-              <div className="w-full h-full relative flex items-center justify-center">
-                
-                {/* Static Rings */}
-                <div className="absolute inset-0 border border-zinc-700/30 rounded-full border-dashed pointer-events-none"></div>
-                <div className="absolute inset-[20%] border border-zinc-800/60 rounded-full pointer-events-none"></div>
-                <div className="absolute inset-[40%] border border-zinc-800/40 rounded-full border-dotted pointer-events-none"></div>
-
-                {/* Rotating Sweep and Line */}
-                <motion.div 
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                  className="absolute inset-0 rounded-full"
-                >
-                   {/* Conic sweep trail */}
-                   <div 
-                     className="absolute inset-0 rounded-full opacity-60"
-                     style={{
-                       background: 'conic-gradient(from 90deg at 50% 50%, transparent 50%, rgba(0, 255, 65, 0.05) 80%, rgba(0, 255, 65, 0.4) 100%)'
-                     }}
-                   />
-                   {/* Radar line */}
-                   <div className="absolute top-1/2 right-0 w-1/2 h-px bg-[#00FF41] transform -translate-y-1/2 origin-left shadow-[0_0_12px_#00FF41]"></div>
-                </motion.div>
-
-                {/* Radar Blips (Targets) */}
-                <motion.div 
-                  className="absolute top-[30%] left-[65%] w-1.5 h-1.5 bg-[#00FF41] rounded-full shadow-[0_0_8px_#00FF41]"
-                  animate={{ opacity: [0, 1, 0, 0] }}
-                  transition={{ duration: 8, repeat: Infinity, times: [0, 0.05, 0.3, 1], delay: 1.5 }}
-                />
-                <motion.div 
-                  className="absolute top-[65%] left-[25%] w-1 h-1 bg-[#00FF41] rounded-full shadow-[0_0_8px_#00FF41]"
-                  animate={{ opacity: [0, 1, 0, 0] }}
-                  transition={{ duration: 8, repeat: Infinity, times: [0, 0.05, 0.3, 1], delay: 5.5 }}
-                />
-
-                {/* Center Core */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-[#00FF41] rounded-full z-10 shadow-[0_0_15px_#00FF41]"></div>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 border border-[#00FF41]/30 rounded-full z-10"></div>
+            {/* Photo Placeholder */}
+            <div className="relative w-full aspect-[3/4] md:aspect-square lg:aspect-[3/4] border border-zinc-900 bg-[#0a0a0a] overflow-hidden group">
+              <img 
+                src={generalData?.photoUrl || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=800&h=1000"} 
+                alt="Portrait Placeholder" 
+                className="w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"
+              />
+              <div className="absolute inset-0 bg-[#050505]/40 group-hover:bg-transparent transition-colors duration-500 pointer-events-none"></div>
+              <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-sm border border-zinc-800 px-3 py-1 font-mono text-[10px] text-zinc-400 uppercase tracking-widest z-10">
+                [ {generalData?.photoUrl ? 'Portrait.jpg' : 'Photo_Placeholder.jpg'} ]
               </div>
             </div>
           </div>
@@ -149,7 +111,7 @@ export function About() {
               viewport={{ once: true, margin: "-100px" }}
               className="text-2xl md:text-4xl lg:text-5xl font-display font-light leading-[1.2] tracking-tight text-white mb-16"
             >
-              {t.manifesto}
+              {t('About_Manifesto', language === 'uk' ? 'Дизайн для мене — це створення комплексного мультимедійного досвіду. Я проєктую сучасні вебрішення та цифрові продукти, де продумана візуальна естетика поєднується з передовими технологіями для максимально інтуїтивної взаємодії.' : 'For me, design is about creating a comprehensive multimedia experience. I engineer modern web solutions and digital products where thoughtful visual aesthetics combine with advanced technologies for highly intuitive interaction.')}
             </motion.p>
 
             {/* Scrolling Ticker (simplified for now, using wrap) */}
@@ -170,19 +132,18 @@ export function About() {
           </div>
         </div>
 
-        {/* Research & Academia Block - Strict List */}
-        <div className="pt-32 border-t border-zinc-900">
-           <div className="mb-16">
-             <h2 className="text-[10vw] md:text-[12vw] leading-[0.85] font-display font-black uppercase tracking-tighter mix-blend-difference">
-                <span className="text-white block">{t.researchTitle1}</span>
-                <span className="text-zinc-600 block md:-mt-4">{t.researchTitle2}</span>
+         {/* Research & Academia Block - Strict List */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8 pt-32 border-t border-zinc-900">
+          <div className="lg:col-span-5 pr-8">
+             <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-black uppercase tracking-tight mix-blend-difference mb-6 break-words text-white">
+                {t('About_ResearchTitle', language === 'uk' ? 'Викладання' : 'Teaching')}
              </h2>
-             <p className="text-zinc-500 font-mono text-sm leading-relaxed max-w-sm mt-8">
-              {t.researchDesc}
+             <p className="text-zinc-500 font-mono text-sm leading-relaxed max-w-sm">
+              {t('About_ResearchDesc', language === 'uk' ? 'Академічна практика та викладання є фундаментальною частиною мого підходу до концептуального та практичного дизайну.' : 'Academic practice and teaching are a fundamental part of my approach to conceptual and practical design.')}
              </p>
-           </div>
+          </div>
 
-          <div className="flex flex-col">
+          <div className="lg:col-span-7 flex flex-col">
             {displayData.map((item, index) => (
               <motion.div 
                 key={index}

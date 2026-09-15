@@ -4,10 +4,11 @@ import { ExternalLink } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { fetchProjectsFromSheet } from '../lib/sheets';
 
 const categories = ['All', 'UI/UX', 'Information Design', '3D'];
 
-const projectsUk = [
+const fallbackProjectsUk = [
   {
     title: 'Rodowod',
     category: 'Information Design',
@@ -37,7 +38,7 @@ const projectsUk = [
   }
 ];
 
-const projectsEn = [
+const fallbackProjectsEn = [
   {
     title: 'Rodowod',
     category: 'Information Design',
@@ -68,20 +69,33 @@ const projectsEn = [
 ];
 
 export function Projects() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const [activeCategory, setActiveCategory] = useState('All');
+  const [projectsData, setProjectsData] = useState<any[]>(language === 'uk' ? fallbackProjectsUk : fallbackProjectsEn);
   const sectionRef = useRef<HTMLElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const t = language === 'uk' ? {
-    titleWork: "Приклади ",
-    titleHighlight: "Проєктів",
-  } : {
-    titleWork: "Project ",
-    titleHighlight: "Examples",
-  };
+  useEffect(() => {
+    const loadProjects = async () => {
+      const sheetProjects = await fetchProjectsFromSheet();
+      if (sheetProjects.length > 0) {
+        const mapped = sheetProjects.map(p => ({
+          title: p.title,
+          category: p.category,
+          role: p.role,
+          year: p.year,
+          description: language === 'uk' ? p.descriptionUk : p.descriptionEn,
+          image: p.image,
+          link: p.link
+        }));
+        setProjectsData(mapped);
+      } else {
+        setProjectsData(language === 'uk' ? fallbackProjectsUk : fallbackProjectsEn);
+      }
+    };
+    loadProjects();
+  }, [language]);
 
-  const projectsData = language === 'uk' ? projectsUk : projectsEn;
   const filteredProjects = activeCategory === 'All' 
     ? projectsData 
     : projectsData.filter(p => p.category === activeCategory);
@@ -122,8 +136,8 @@ export function Projects() {
       <div className="px-6 mb-24 md:pl-24 max-w-7xl">
         
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-8">
-          <h2 className="text-4xl md:text-6xl font-display font-bold tracking-tight text-white uppercase">
-            {t.titleWork} <br/><span className="text-zinc-600">{t.titleHighlight}</span>
+          <h2 className="text-4xl md:text-6xl font-display font-black tracking-tight text-white uppercase">
+            {t('Projects_Title1', language === 'uk' ? 'Приклади' : 'Project')} <br/><span className="text-zinc-600">{t('Projects_Title2', language === 'uk' ? 'Проєктів' : 'Examples')}</span>
           </h2>
           
           <div className="flex flex-wrap gap-2">

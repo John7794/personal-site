@@ -1,24 +1,32 @@
 import { motion } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
 
-const stepsUk = [
-  { step: '01', title: 'UX-дослідження', desc: 'Аналіз потреб користувачів, збір даних та формування архітектури досвіду.' },
-  { step: '02', title: 'Візуальна концепція', desc: 'Пошук стилістики, створення мудбордів та ключових візуальних метафор.' },
-  { step: '03', title: 'Розробка UI-інтерфейсу', desc: 'Проєктування екранів, типографіки, сіток та дизайн-системи продукту.' },
-  { step: '04', title: 'Розробка прототипу та реалізація проєкту', desc: 'Створення інтерактивних прототипів, підготовка асетів та фінальний запуск.' }
-];
-
-const stepsEn = [
-  { step: '01', title: 'UX Research', desc: 'Analyzing user needs, gathering data, and shaping the experience architecture.' },
-  { step: '02', title: 'Visual Concept', desc: 'Searching for styling, creating moodboards, and defining key visual metaphors.' },
-  { step: '03', title: 'UI Design', desc: 'Designing screens, typography, grids, and the product\'s design system.' },
-  { step: '04', title: 'Prototyping & Implementation', desc: 'Creating interactive prototypes, preparing assets, and final launch.' }
-];
-
 export function Methodology() {
-  const { language } = useLanguage();
-  const stepsData = language === 'uk' ? stepsUk : stepsEn;
-  const title = language === 'uk' ? 'Методологія' : 'Methodology';
+  const { language, t } = useLanguage();
+  const title = t('Methodology_Title', language === 'uk' ? 'Методологія' : 'Methodology');
+
+  const stepsData = [
+    {
+      step: '01',
+      title: t('Methodology_Step1_Title', language === 'uk' ? 'UX-дослідження' : 'UX Research'),
+      desc: t('Methodology_Step1_Desc', language === 'uk' ? 'Аналіз потреб користувачів, збір даних та формування архітектури досвіду.' : 'Analyzing user needs, gathering data, and shaping the experience architecture.')
+    },
+    {
+      step: '02',
+      title: t('Methodology_Step2_Title', language === 'uk' ? 'Візуальна концепція' : 'Visual Concept'),
+      desc: t('Methodology_Step2_Desc', language === 'uk' ? 'Пошук стилістики, створення мудбордів та ключових візуальних метафор.' : 'Searching for styling, creating moodboards, and defining key visual metaphors.')
+    },
+    {
+      step: '03',
+      title: t('Methodology_Step3_Title', language === 'uk' ? 'Розробка UI-інтерфейсу' : 'UI Design'),
+      desc: t('Methodology_Step3_Desc', language === 'uk' ? 'Проєктування екранів, типографіки, сіток та дизайн-системи продукту.' : 'Designing screens, typography, grids, and the product\'s design system.')
+    },
+    {
+      step: '04',
+      title: t('Methodology_Step4_Title', language === 'uk' ? 'Розробка прототипу та реалізація проєкту' : 'Prototyping & Implementation'),
+      desc: t('Methodology_Step4_Desc', language === 'uk' ? 'Створення інтерактивних прототипів, підготовка асетів та фінальний запуск.' : 'Creating interactive prototypes, preparing assets, and final launch.')
+    }
+  ];
 
   return (
     <section className="py-32 relative z-10 border-t border-zinc-900 bg-[#050505]">

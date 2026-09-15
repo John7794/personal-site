@@ -6,7 +6,7 @@ import { useLanguage } from '../context/LanguageContext';
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { language, toggleLanguage } = useLanguage();
+  const { language, toggleLanguage, t } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,25 +16,10 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const t = language === 'uk' ? {
-    home: 'Головна',
-    about: 'Про мене',
-    work: 'Роботи',
-    contact: 'Контакти',
-    talk: "Зв'язатися"
-  } : {
-    home: 'Home',
-    about: 'About',
-    work: 'Work',
-    contact: 'Contact',
-    talk: "Let's Talk"
-  };
-
   const navLinks = [
-    { name: t.home, href: '#home' },
-    { name: t.about, href: '#about' },
-    { name: t.work, href: '#work' },
-    { name: t.contact, href: '#contact' },
+    { name: t('Nav_Work', language === 'uk' ? 'Роботи' : 'Work'), href: '#work' },
+    { name: t('Nav_About', language === 'uk' ? 'Про мене' : 'About'), href: '#about' },
+    { name: t('Nav_Contact', language === 'uk' ? 'Контакти' : 'Contact'), href: '#contact' },
   ];
 
   return (
@@ -76,7 +61,7 @@ export function Navbar() {
               href="#contact"
               className="px-4 py-2 text-sm font-medium bg-white text-black rounded-full hover:bg-zinc-200 transition-colors"
             >
-              {t.talk}
+              {t('Nav_Talk', language === 'uk' ? "Зв'язатися" : "Let's Talk")}
             </a>
           </div>
 

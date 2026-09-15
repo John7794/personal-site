@@ -11,7 +11,7 @@ export function Hero() {
   const y1 = useTransform(scrollY, [0, 1000], [0, 200]);
   const y2 = useTransform(scrollY, [0, 1000], [0, -100]);
   const opacity = useTransform(scrollY, [0, 400], [1, 0]);
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -52,22 +52,6 @@ export function Hero() {
     return () => ctx.revert();
   }, []);
 
-  const t = language === 'uk' ? {
-    surPrefix: 'СЕЛ',
-    surHighlight: 'ІВАН',
-    surSuffix: 'ОВ',
-    desc: 'Структурування хаосу через візуальні форми.',
-    btnWork: 'Декодувати Роботи',
-    btnContact: "Ініціювати Зв'язок"
-  } : {
-    surPrefix: 'SEL',
-    surHighlight: 'IVAN',
-    surSuffix: 'OV',
-    desc: 'Structuring chaos through visual forms.',
-    btnWork: 'Decode Works',
-    btnContact: 'Initiate Contact'
-  };
-
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#050505]">
       
@@ -104,13 +88,13 @@ export function Hero() {
         <h1 className="w-full flex justify-center text-center font-display font-black uppercase leading-[0.85] tracking-tighter mix-blend-difference pointer-events-auto whitespace-nowrap">
           <span className="text-[10vw] md:text-[11vw] flex items-center group cursor-default">
             <span className="text-transparent [-webkit-text-stroke:2px_white] group-hover:[-webkit-text-stroke:2px_#00FF41] transition-all duration-500">
-              <ScrambleText text={t.surPrefix} delay={200} />
+              <ScrambleText text={t('Hero_Prefix', language === 'uk' ? 'СЕЛ' : 'SEL')} delay={200} />
             </span>
             <span className="text-white">
-              <ScrambleText text={t.surHighlight} delay={400} />
+              <ScrambleText text={t('Hero_Highlight', language === 'uk' ? 'ІВАН' : 'IVAN')} delay={400} />
             </span>
             <span className="text-transparent [-webkit-text-stroke:2px_white] group-hover:[-webkit-text-stroke:2px_#00FF41] transition-all duration-500">
-              <ScrambleText text={t.surSuffix} delay={600} />
+              <ScrambleText text={t('Hero_Suffix', language === 'uk' ? 'ОВ' : 'OV')} delay={600} />
             </span>
           </span>
         </h1>
@@ -121,7 +105,7 @@ export function Hero() {
           transition={{ duration: 1, delay: 1.5, ease: [0.16, 1, 0.3, 1] }}
           className="text-lg md:text-xl text-white font-light tracking-wide mt-12 text-center pointer-events-auto"
         >
-          {t.desc}
+          {t('Hero_Desc', language === 'uk' ? 'Структурування хаосу через візуальні форми.' : 'Structuring chaos through visual forms.')}
         </motion.p>
 
         <motion.div
@@ -134,13 +118,13 @@ export function Hero() {
             href="#work"
             className="px-8 py-4 bg-[#00FF41] text-black font-mono text-sm uppercase tracking-widest font-bold hover:bg-white transition-all duration-300"
           >
-            {t.btnWork}
+            {t('Hero_BtnWork', language === 'uk' ? 'Декодувати Роботи' : 'Decode Works')}
           </a>
           <a 
             href="#contact"
             className="px-8 py-4 bg-transparent text-white border border-zinc-800 font-mono text-sm uppercase tracking-widest hover:border-[#00FF41] hover:text-[#00FF41] transition-all duration-300"
           >
-            {t.btnContact}
+            {t('Hero_BtnContact', language === 'uk' ? "Ініціювати Зв'язок" : 'Initiate Contact')}
           </a>
         </motion.div>
       </div>
