@@ -22,6 +22,17 @@ export interface SheetProject {
 
 export type TranslationDict = Record<string, { uk: string; en: string }>;
 
+export function processGoogleDriveUrl(url: string): string {
+  if (!url) return '';
+  // Convert standard Google Drive viewing URLs to direct download/image URLs
+  const driveRegex = /drive\.google\.com\/(?:file\/d\/|open\?id=)([\w-]+)/;
+  const match = url.match(driveRegex);
+  if (match && match[1]) {
+    return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+  }
+  return url;
+}
+
 export interface SheetGeneralData {
   photoUrl: string;
   email: string;
@@ -64,7 +75,7 @@ export async function fetchProjectsFromSheet(): Promise<SheetProject[]> {
               year: row['Year'] || '',
               descriptionUk: descUk,
               descriptionEn: descEn,
-              image: row['Image URL'] || '',
+              image: processGoogleDriveUrl(row['Image URL'] || ''),
               link: row['Link'] || '#'
             };
           });
@@ -118,7 +129,7 @@ export async function fetchGeneralDataFromSheet(): Promise<SheetGeneralData | nu
 
           // Map the found keys to our general data interface
           resolve({
-            photoUrl: data['Photo URL']?.uk || data['Photo URL']?.en || '',
+            photoUrl: processGoogleDriveUrl(data['Photo URL']?.uk || data['Photo URL']?.en || ''),
             email: data['Email']?.uk || data['Email']?.en || '',
             linkedin: data['LinkedIn']?.uk || data['LinkedIn']?.en || '',
             instagram: data['Instagram']?.uk || data['Instagram']?.en || '',
