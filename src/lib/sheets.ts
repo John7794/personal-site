@@ -6,8 +6,8 @@ import Papa from 'papaparse';
 // 2. Click File -> Share -> Publish to web
 // 3. Choose the specific tab (e.g. "Projects" or "General") and "Comma-separated values (.csv)"
 // 4. Click Publish and copy the generated links here.
-const PROJECTS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0RprQzxAgCdpGEp6LGscCYr9yA8gvyn2TmyX-cS-mQ0iU8NEOh8M_WfmFTCsENa8dpBJcsR_RWQsX/pub?output=csv";
-const GENERAL_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0RprQzxAgCdpGEp6LGscCYr9yA8gvyn2TmyX-cS-mQ0iU8NEOh8M_WfmFTCsENa8dpBJcsR_RWQsX/pub?output=csv";
+const PROJECTS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0RprQzxAgCdpGEp6LGscCYr9yA8gvyn2TmyX-cS-mQ0iU8NEOh8M_WfmFTCsENa8dpBJcsR_RWQsX/pub?output=csv&gid=0";
+const GENERAL_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0RprQzxAgCdpGEp6LGscCYr9yA8gvyn2TmyX-cS-mQ0iU8NEOh8M_WfmFTCsENa8dpBJcsR_RWQsX/pub?output=csv&gid=339548291";
 
 export interface SheetProject {
   title: string;
