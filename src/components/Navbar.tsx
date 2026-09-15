@@ -41,7 +41,7 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <a 
-                key={link.name} 
+                key={link.href} 
                 href={link.href}
                 className="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
               >
@@ -105,7 +105,7 @@ export function Navbar() {
             <div className="flex flex-col gap-6 items-center justify-center flex-1">
               {navLinks.map((link, i) => (
                 <motion.a
-                  key={link.name}
+                  key={link.href}
                   href={link.href}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}

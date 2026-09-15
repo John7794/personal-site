@@ -92,8 +92,9 @@ export function About() {
             {/* Photo Placeholder */}
             <div className="relative w-full aspect-[3/4] md:aspect-square lg:aspect-[3/4] border border-zinc-900 bg-[#0a0a0a] overflow-hidden group">
               <img 
-                src={generalData?.photoUrl || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=800&h=1000"} 
+                src={generalData?.photoUrl || "https://drive.google.com/uc?export=view&id=1vI5mRWlvqarUewlt53S36TNPEqbzJXs0"} 
                 alt="Portrait Placeholder" 
+                referrerPolicy="no-referrer"
                 className="w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"
               />
               <div className="absolute inset-0 bg-[#050505]/40 group-hover:bg-transparent transition-colors duration-500 pointer-events-none"></div>

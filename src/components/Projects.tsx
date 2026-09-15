@@ -79,13 +79,16 @@ export function Projects() {
     const loadProjects = async () => {
       const sheetProjects = await fetchProjectsFromSheet();
       if (sheetProjects.length > 0) {
-        const mapped = sheetProjects.map(p => ({
+        const mapped = sheetProjects
+          .filter(p => p.title && p.title.trim() !== '')
+          .map((p, i) => ({
+          id: i.toString(),
           title: p.title,
           category: p.category,
           role: p.role,
           year: p.year,
           description: language === 'uk' ? p.descriptionUk : p.descriptionEn,
-          image: p.image,
+          image: p.image || "https://images.unsplash.com/photo-1590494165264-1ebe3602eb80?auto=format&fit=crop&q=80&w=1200&h=800",
           link: p.link
         }));
         setProjectsData(mapped);
@@ -169,7 +172,7 @@ export function Projects() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.4 }}
-                key={project.title}
+                key={`project-${index}-${project.title}`}
                 className="group block relative border border-zinc-900 bg-black hover:border-zinc-700 transition-colors overflow-hidden w-full md:w-[600px] lg:w-[800px] h-[450px] lg:h-[550px] flex-shrink-0"
               >
                 {/* Always visible cover image */}
@@ -177,6 +180,7 @@ export function Projects() {
                   <img 
                     src={project.image} 
                     alt={project.title} 
+                    referrerPolicy="no-referrer"
                     className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" 
                   />
                   <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500"></div>
